@@ -15,7 +15,7 @@ class GatewayService {
   GatewayState _state = const GatewayState();
   DateTime? _startingAt;
   bool _startInProgress = false;
-  static final _tokenUrlRegex = RegExp(r'https?://(?:localhost|127\.0\.0\.1):18789/#token=[0-9a-f]+');
+  static final _tokenUrlRegex = RegExp(r'https?://(?:localhost|127\.0\.0\.1):1420/#token=[0-9a-f]+');
   static final _boxDrawing = RegExp(r'[│┤├┬┴┼╮╯╰╭─╌╴╶┌┐└┘◇◆]+');
 
   /// Strip ANSI, box-drawing chars, and whitespace to reconstruct URLs
@@ -78,7 +78,7 @@ class GatewayService {
       // Prefer token from config file over stale SharedPreferences value (#74, #82).
       final configToken = await _readTokenFromConfig();
       final effectiveUrl = configToken != null
-          ? 'http://localhost:18789/#token=$configToken'
+          ? 'http://localhost:1420/#token=$configToken'
           : savedUrl;
       if (configToken != null) prefs.dashboardUrl = effectiveUrl;
       _startingAt = DateTime.now();
@@ -118,7 +118,7 @@ class GatewayService {
     });
   }
 
-  /// Patch /root/.openclaw/openclaw.json to clear denyCommands and set
+  /// Patch /root/.openhuman/openhuman.json to clear denyCommands and set
   /// allowCommands for all node capabilities. This is the config file the
   /// gateway actually reads (not a separate gateway.json).
   Future<void> _writeNodeAllowConfig() async {
@@ -133,12 +133,12 @@ class GatewayService {
       'haptic.vibrate',
       'serial.list', 'serial.connect', 'serial.disconnect', 'serial.write', 'serial.read',
     ];
-    // Use a Node.js one-liner to safely merge into existing openclaw.json
+    // Use a Node.js one-liner to safely merge into existing openhuman.json
     // without clobbering other settings (API keys, onboarding config, etc.)
     final allowJson = jsonEncode(allowCommands);
     final script = '''
 const fs = require("fs");
-const p = "/root/.openclaw/openclaw.json";
+const p = "/root/.openhuman/openhuman.json";
 let c = {};
 try { c = JSON.parse(fs.readFileSync(p, "utf8")); } catch {}
 if (!c.gateway) c.gateway = {};
@@ -171,7 +171,7 @@ fs.writeFileSync(p, JSON.stringify(c, null, 2));
     if (!prootOk) {
       try {
         final filesDir = await NativeBridge.getFilesDir();
-        final configFile = File('$filesDir/rootfs/ubuntu/root/.openclaw/openclaw.json');
+        final configFile = File('$filesDir/rootfs/ubuntu/root/.openhuman/openhuman.json');
         Map<String, dynamic> config = {};
         if (configFile.existsSync()) {
           try {
@@ -197,12 +197,12 @@ fs.writeFileSync(p, JSON.stringify(c, null, 2));
     }
   }
 
-  /// Repair openclaw.json on disk — fixes corrupted model entries and ensures
+  /// Repair openhuman.json on disk — fixes corrupted model entries and ensures
   /// gateway.mode=local is set. Called on init() before any gateway start (#88).
   Future<void> _repairConfigFile() async {
     try {
       final filesDir = await NativeBridge.getFilesDir();
-      final configFile = File('$filesDir/rootfs/ubuntu/root/.openclaw/openclaw.json');
+      final configFile = File('$filesDir/rootfs/ubuntu/root/.openhuman/openhuman.json');
       if (!configFile.existsSync()) return;
       final content = configFile.readAsStringSync();
       if (content.isEmpty) return;
@@ -272,11 +272,11 @@ fs.writeFileSync(p, JSON.stringify(c, null, 2));
     }
   }
 
-  /// Read the actual gateway auth token from openclaw.json config file (#74, #82).
+  /// Read the actual gateway auth token from openhuman.json config file (#74, #82).
   /// This is the source of truth — more reliable than regex-scraping stdout.
   Future<String?> _readTokenFromConfig() async {
     try {
-      final raw = await NativeBridge.readRootfsFile('root/.openclaw/openclaw.json');
+      final raw = await NativeBridge.readRootfsFile('root/.openhuman/openhuman.json');
       if (raw == null) return null;
       final config = jsonDecode(raw) as Map<String, dynamic>;
       final token = config['gateway']?['auth']?['token'];
@@ -394,14 +394,14 @@ fs.writeFileSync(p, JSON.stringify(c, null, 2));
           .timeout(const Duration(seconds: 3));
 
       if (response.statusCode < 500 && _state.status != GatewayStatus.running) {
-        // Read the actual token from openclaw.json — source of truth (#74, #82).
+        // Read the actual token from openhuman.json — source of truth (#74, #82).
         // This ensures the displayed token always matches the gateway's config,
         // even if the stdout regex didn't capture it.
         String? configUrl = _state.dashboardUrl;
         try {
           final token = await _readTokenFromConfig();
           if (token != null) {
-            configUrl = 'http://localhost:18789/#token=$token';
+            configUrl = 'http://localhost:1420/#token=$token';
             final prefs = PreferencesService();
             await prefs.init();
             prefs.dashboardUrl = configUrl;

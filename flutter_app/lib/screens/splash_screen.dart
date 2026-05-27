@@ -86,12 +86,12 @@ class _SplashScreenState extends State<SplashScreen>
             if (!await downloadDir.exists()) {
               await downloadDir.create(recursive: true);
             }
-            final snapshotPath = '$sdcard/Download/openclaw-snapshot-$oldVersion.json';
-            final openclawJson = await NativeBridge.readRootfsFile('root/.openclaw/openclaw.json');
+            final snapshotPath = '$sdcard/Download/openhuman-snapshot-$oldVersion.json';
+            final openhumanJson = await NativeBridge.readRootfsFile('root/.openhuman/openhuman.json');
             final snapshot = {
               'version': oldVersion,
               'timestamp': DateTime.now().toIso8601String(),
-              'openclawConfig': openclawJson,
+              'openhumanConfig': openhumanJson,
               'dashboardUrl': prefs.dashboardUrl,
               'autoStart': prefs.autoStartGateway,
               'nodeEnabled': prefs.nodeEnabled,
@@ -123,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen>
           final rootfsOk = status['rootfsExists'] == true;
           final bashOk = status['binBashExists'] == true;
           final nodeOk = status['nodeInstalled'] == true;
-          final openclawOk = status['openclawInstalled'] == true;
+          final openhumanOk = status['openhumanInstalled'] == true;
           final bypassOk = status['bypassInstalled'] == true;
 
           // Core rootfs must exist — can't repair without it
@@ -148,18 +148,18 @@ class _SplashScreenState extends State<SplashScreen>
               } catch (_) {}
             }
 
-            // Reinstall openclaw if package.json is missing (#97)
-            if (!openclawOk && nodeOk) {
-              setState(() => _status = 'Reinstalling OpenClaw...');
+            // Reinstall openhuman if package.json is missing (#97)
+            if (!openhumanOk && nodeOk) {
+              setState(() => _status = 'Reinstalling OpenHuman...');
               try {
-                const wrapper = '/root/.openclaw/node-wrapper.js';
+                const wrapper = '/root/.openhuman/node-wrapper.js';
                 const nodeRun = 'node $wrapper';
                 const npmCli = '/usr/local/lib/node_modules/npm/bin/npm-cli.js';
                 await NativeBridge.runInProot(
-                  '$nodeRun $npmCli install -g openclaw',
+                  '$nodeRun $npmCli install -g openhuman',
                   timeout: 1800,
                 );
-                await NativeBridge.createBinWrappers('openclaw');
+                await NativeBridge.createBinWrappers('openhuman');
               } catch (_) {}
             }
 
@@ -203,7 +203,7 @@ class _SplashScreenState extends State<SplashScreen>
               ),
               const SizedBox(height: 24),
               Text(
-                'OpenClaw',
+                'OpenHuman',
                 style: GoogleFonts.inter(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,

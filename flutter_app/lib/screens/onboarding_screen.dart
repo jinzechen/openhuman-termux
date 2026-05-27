@@ -13,7 +13,7 @@ import '../services/preferences_service.dart';
 import '../widgets/terminal_toolbar.dart';
 import 'dashboard_screen.dart';
 
-/// Runs `openclaw onboard` in a terminal so the user can configure
+/// Runs `openhuman onboard` in a terminal so the user can configure
 /// API keys and select loopback binding. Shown after first-time setup
 /// and accessible from the dashboard for re-configuration.
 class OnboardingScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _altNotifier = ValueNotifier<bool>(false);
   final _screenshotKey = GlobalKey();
   static final _anyUrlRegex = RegExp(r'https?://[^\s<>\[\]"' "'" r'\)]+');
-  static final _tokenUrlRegex = RegExp(r'https?://(?:localhost|127\.0\.0\.1):18789/#token=[0-9a-f]+');
+  static final _tokenUrlRegex = RegExp(r'https?://(?:localhost|127\.0\.0\.1):1420/#token=[0-9a-f]+');
   static final _ansiEscape = AppConstants.ansiEscape;
   /// Box-drawing and other TUI characters that break URLs when copied
   static final _boxDrawing = RegExp(r'[│┤├┬┴┼╮╯╰╭─╌╴╶┌┐└┘◇◆]+');
@@ -106,18 +106,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
       // Replace the login shell with a command that runs onboarding.
       // buildProotArgs ends with [..., '/bin/bash', '-l']
-      // Replace with [..., '/bin/bash', '-lc', 'openclaw onboard']
+      // Replace with [..., '/bin/bash', '-lc', 'openhuman onboard']
 
       final onboardingArgs = List<String>.from(args);
       onboardingArgs.removeLast(); // remove '-l'
       onboardingArgs.removeLast(); // remove '/bin/bash'
       onboardingArgs.addAll([
         '/bin/bash', '-lc',
-        'echo "=== OpenClaw Onboarding ===" && '
+        'echo "=== OpenHuman Onboarding ===" && '
         'echo "Configure your API keys and binding settings." && '
         'echo "TIP: Select Loopback (127.0.0.1) when asked for binding!" && '
         'echo "" && '
-        'openclaw onboard; '
+        'openhuman onboard; '
         'echo "" && echo "Onboarding complete! You can close this screen."',
       ]);
 
@@ -134,7 +134,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       _pty!.output.cast<List<int>>().listen((data) {
         final text = utf8.decode(data, allowMalformed: true);
         _terminal.write(text);
-        // Scan output for token URL (e.g. http://localhost:18789/#token=...)
+        // Scan output for token URL (e.g. http://localhost:1420/#token=...)
         _outputBuffer += text;
         // Keep buffer manageable
         if (_outputBuffer.length > 4096) {
@@ -415,7 +415,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('OpenClaw Onboarding'),
+        title: const Text('OpenHuman Onboarding'),
         leading: widget.isFirstRun
             ? null // no back button during first-run
             : IconButton(

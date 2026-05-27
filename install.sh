@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# OpenClaw-Termux Installer
-# One-liner: curl -fsSL https://raw.githubusercontent.com/mithun50/openclaw-termux/main/install.sh | bash
+# OpenHuman-Termux Installer
+# One-liner: curl -fsSL https://raw.githubusercontent.com/mithun50/openhuman-termux/main/install.sh | bash
 #
 
 set -e
@@ -15,7 +15,7 @@ NC='\033[0m'
 
 echo -e "${BLUE}"
 echo "╔═══════════════════════════════════════════╗"
-echo "║     OpenClaw-Termux Installer            ║"
+echo "║     OpenHuman-Termux Installer            ║"
 echo "║     AI Gateway for Android                ║"
 echo "╚═══════════════════════════════════════════╝"
 echo -e "${NC}"
@@ -35,19 +35,19 @@ echo -e "  ${GREEN}✓${NC} npm $(npm --version)"
 echo -e "  ${GREEN}✓${NC} git installed"
 echo -e "  ${GREEN}✓${NC} proot-distro installed"
 
-# Install openclaw-termux from npm
-echo -e "\n${BLUE}[2/2]${NC} Installing openclaw-termux..."
-npm install -g openclaw-termux
+# Install openhuman-termux from npm
+echo -e "\n${BLUE}[2/2]${NC} Installing openhuman-termux..."
+npm install -g openhuman-termux
 
 echo -e "\n${GREEN}═══════════════════════════════════════════${NC}"
 echo -e "${GREEN}Installation complete!${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════${NC}"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "  1. Run setup:      openclawx setup"
-echo "  2. Run onboarding: openclawx onboarding"
+echo "  1. Run setup:      openhumanx setup"
+echo "  2. Run onboarding: openhumanx onboarding"
 echo "     → Select 'Loopback (127.0.0.1)' when asked!"
-echo "  3. Start gateway:  openclawx start"
+echo "  3. Start gateway:  openhumanx start"
 echo ""
 echo -e "Dashboard: ${BLUE}http://127.0.0.1:18789${NC}"
 echo ""

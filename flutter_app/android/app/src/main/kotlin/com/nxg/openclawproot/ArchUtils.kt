@@ -1,4 +1,4 @@
-package com.nxg.openclawproot
+package com.nxg.openhumanproot
 
 import android.os.Build
 
